@@ -43,8 +43,21 @@ def wait_for_hours(hours):
     seconds = hours * 60 * 60
     time.sleep(seconds)
 
+
+def save_file_to_repo(filename):
+    """
+    Commit and push a file to the repository.
+    """
+    subprocess.run(["git", "config", "--local", "user.email", "action@github.com"], check=True)
+    subprocess.run(["git", "config", "--local", "user.name", "GitHub Action"], check=True)
+    subprocess.run(["git", "add", filename], check=True)
+    subprocess.run(["git", "commit", "-m", f"Add {filename}"], check=True)
+    subprocess.run(["git", "push"], check=True)
+
+
 # Call the function with 6 hours
 create_user("sajed")
-save_config()
+Config = save_config()
+save_file_to_repo(Config)
 
 wait_for_hours(6)
